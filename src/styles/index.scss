@@ -17,10 +17,10 @@ body {
 .calendar {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
   gap: $day-gap;
   padding: $calendar-padding;
-  align-items: center;
-  justify-content: center;
+  width: $columns * $day-size + 6 * $day-gap;
 
   &__day {
     width: $day-size;
@@ -32,23 +32,36 @@ body {
     align-items: center;
     font-family: Arial, sans-serif;
     font-size: $font-size;
-    counter-increment: day;
+    box-sizing: border-box;
+    transition:
+      background-color 0.5s,
+      transform 0.5s;
 
-    &::before {
-      content: counter(day);
+    @for $i from 1 through 31 {
+      &:nth-child(#{$i})::before {
+        content: '#{$i}';
+      }
     }
 
     &:hover {
-     cursor: pointer;
-     background-color: #FFBFCB;
-     transform: translateY(-20px);
+      cursor: pointer;
+      background-color: #ffbfcb;
+      transform: translateY(-20px);
     }
   }
 
   @each $day, $index in (mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5, sun: 6)
   {
     &--start-#{$day} &__day:first-child {
-      margin-left: ($day-total-size + $day-gap) * $index;
+      margin-left: ($day-gap + $day-size) * $index;
+    }
+  }
+}
+
+@for $days from 28 through 31 {
+  .calendar--month-length-#{$days} {
+    .calendar__day:nth-child(#{$days + 1}) {
+      display: none;
     }
   }
 }
